@@ -1,4 +1,4 @@
-#include "trie.cpp"
+#include "src/trie.cpp"
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -291,7 +291,7 @@ int main(){
 
   std::cout<<"--------Welcome--------"<<std::endl;
   //Trie Created using txt file
-  dictionary.createDictionary("google-10000-english.txt");
+  dictionary.createDictionary("dictionary10000.txt");
 
 
 
