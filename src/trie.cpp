@@ -1,6 +1,7 @@
 #include "trie.hpp"
 #include <fstream>
 
+
 Trie::Trie()
 {
   root = getNewNode();
@@ -98,6 +99,18 @@ int Trie::levenshteinDistance(std::string X, int m, std::string Y, int n)
   return std::min(std::min(levenshteinDistance(X, m - 1, Y, n) + 1,
             levenshteinDistance(X, m, Y, n - 1) + 1),
             levenshteinDistance(X, m - 1, Y, n - 1) + cost);
+}
+
+int Trie::printTime(std::string X, int m, std::string Y, int n)
+{
+  clock_t t;
+  int ld;
+  t = clock();
+  ld = levenshteinDistance(X, m, Y, n);
+  t = clock() - t;
+  std::cout<<"Time: "<<t<<std::endl;
+  return ld;
+
 }
 
 //*****

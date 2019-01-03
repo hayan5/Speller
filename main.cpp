@@ -100,11 +100,14 @@ void fileGetSuggestions(std::string X)
   std::vector<std::string> suggestions;
   std::string Y;
 
+  clock_t t;
+  t = clock();
   for(int i = 0; i < allWords.size(); i++)
   {
     Y = allWords[i];
     int tempDistance = 100;
     tempDistance = dictionary.levenshteinDistance(X, X.length(), Y, Y.length());
+    //tempDistance = dictionary.printTime(X, X.length(), Y, Y.length());
     if(tempDistance < 2)
       suggestions.push_back(Y);
   }
@@ -113,15 +116,29 @@ void fileGetSuggestions(std::string X)
     {
       std::cout<<i+1<<":"<<suggestions[i]<<std::endl;
     }
+
+    t = clock() - t;
+    std::cout<<"Clicks: "<<t<<" Seconds:"
+    <<((float)t)/CLOCKS_PER_SEC<<std::endl;
   }
   else if(suggestions.size() > 5){
     for(int i = 0; i < 5; i++)
     {
       std::cout<<i+1<<":"<<suggestions[i]<<std::endl;
     }
+
+    t = clock() - t;
+    std::cout<<"Clicks: "<<t<<" Seconds:"
+    <<((float)t)/CLOCKS_PER_SEC<<std::endl;
   }
-  else
+  else{
     std::cout<<"**No suggestions**"<<std::endl;
+
+    t = clock() - t;
+    std::cout<<"Clicks: "<<t<<" Seconds:"
+    <<((float)t)/CLOCKS_PER_SEC<<std::endl;
+  }
+
   std::cout<<std::endl;
 }
 

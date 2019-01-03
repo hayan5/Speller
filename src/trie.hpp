@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <time.h>
 
 struct Node
 {
@@ -37,6 +38,7 @@ public:
   std::vector<std::string> getWords();
 
   int levenshteinDistance(std::string X, int m, std::string Y, int n);
+  int printTime(std::string X, int m, std::string Y, int n);
 
 private:
   Node *root;
