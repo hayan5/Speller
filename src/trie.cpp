@@ -74,22 +74,11 @@ std::vector<std::string> Trie::prefixSearch(std::string prefix)
       temp = temp->map[prefix[i]];
   }
 
-  traversePrefix(prefix, temp, completions);
+  traverse(prefix, temp, completions);
 
   return completions;
 }
 
-//Prefix search recursive helper function
-void Trie::traversePrefix(std::string prefix, Node *node, std::vector<std::string> &v)
-{
-  if(node == NULL)
-    return;
-  if(node->LeafNode && search(prefix) == true)
-    v.push_back(prefix);
-
-  for(auto x : node->map)
-    traversePrefix(prefix + x.first, x.second, v);
-}
 //****
 int Trie::levenshteinDistance(std::string X, int m, std::string Y, int n)
 {
