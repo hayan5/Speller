@@ -291,7 +291,9 @@ int main(){
 
   std::cout<<"--------Welcome--------"<<std::endl;
   //Trie Created using txt file
-  dictionary.loadDictionary("google-10000-english.txt");
+  dictionary.createDictionary("google-10000-english.txt");
+
+
 
   int option = 0;
   bool isQuit = false;

@@ -3,85 +3,60 @@
 
 Trie::Trie()
 {
-  root = getNode();
+  root = getNewNode();
 }
 
-//Destuctor helper function
+Trie::~Trie(){}
 
-Trie::~Trie()
+//Inserts word into trie
+void Trie::insert(std::string word)
 {
+  Node *temp = this->root;
+
+  for (int i = 0; i < word.length(); i++)
+  {
+    char x = word[i];
+
+    if (temp->map[x] == NULL)
+      temp->map[x] = getNewNode();
+
+    temp = temp->map[x];
+  }
+  temp->LeafNode = true;
+
 
 }
 
 //Returns True if input word exsits in trie
 bool Trie::search(std::string word)
 {
-  TrieNode *temp = this->root;
-
+  Node *temp = this->root;
   for (int i = 0; i < word.length(); i++)
   {
-    int index = word[i] - 'a';
-    if(!temp->children[index])
+    temp = temp->map[word[i]];
+
+    if(!temp)
       return false;
-
-    temp = temp->children[index];
   }
-
-  return (temp != NULL && temp->isEndOfWord);
+  return temp->LeafNode;
 }
-
-//Returns true if there are no other children(not a prefix)
-bool Trie::isLastNode(TrieNode *root)
-{
-  for (int i = 0; i < ALPHABET_SIZE; i++)
-    if(root->children[i])
-      return false;
-  return true;
-}
-
-
-//Inserts word into trie
-void Trie::insert(std::string word)
-{
-  TrieNode *temp = this->root;
-  for (int i = 0; i < word.length(); i++)
-  {
-    int index = word[i] - 'a';
-    if (!temp->children[index])
-      temp->children[index] = getNode();
-
-    temp = temp->children[index];
-  }
-
-  temp->isEndOfWord = true;
-}
-
-
 
 //Creates trie using words from input file
-void Trie::loadDictionary(std::string dictionaryFile)
+void Trie::createDictionary(std::string dictionaryFile)
 {
   std::string line;
   std::ifstream data(dictionaryFile);
-  int n = 1;
-  if(data.is_open()){
-    while(getline (data,line)){
-      for(int i = 0, len = line.length(); i < len; i++)
-      {
-        if(ispunct(line[i])){
-          line.erase(i--, 1);
-          len = line.size();
-        }
-      }
-      for(int i = 0; i < line.length(); i ++)
-        line[i] = tolower(line[i]);
 
+  if(data.is_open()){
+
+    while(getline (data,line)){
       insert(line);
     }
-    data.close();
 
+    data.close();
     std::cout<<"Dictionary Created"<<std::endl;
   }
+
   else
     std::cout<<"Unable to open dictionary file"<<std::endl;
 }
@@ -90,36 +65,32 @@ void Trie::loadDictionary(std::string dictionaryFile)
 //to get all possible endings then returns vectors with endings
 std::vector<std::string> Trie::prefixSearch(std::string prefix)
 {
-  TrieNode *temp = this->root;
-  int index;
-  std::vector<std::string> possible;
-  for(int i = 0; i < prefix.length(); i++)
+  Node *temp = this->root;
+  std::vector<std::string> completions;
+
+  for (int i = 0; i < prefix.length(); i++)
   {
-    index = prefix[i] - 'a';
-    if(temp->children[index] != NULL)
-      temp = temp->children[index];
+    if(temp->map[prefix[i]])
+      temp = temp->map[prefix[i]];
   }
 
-  traversePrefix(prefix, temp, possible);
+  traversePrefix(prefix, temp, completions);
 
-  return possible;
-
+  return completions;
 }
+
 //Prefix search recursive helper function
-void Trie::traversePrefix(std::string prefix, TrieNode *node, std::vector<std::string> &v)
+void Trie::traversePrefix(std::string prefix, Node *node, std::vector<std::string> &v)
 {
   if(node == NULL)
     return;
-  if(node->isEndOfWord && search(prefix) == true)
+  if(node->LeafNode && search(prefix) == true)
     v.push_back(prefix);
 
-  for(int i = 0; i < ALPHABET_SIZE; i++)
-  {
-    if(node->children[i])
-      traversePrefix(prefix + (char)(i + 'a'), node->children[i], v);
-  }
+  for(auto x : node->map)
+    traversePrefix(prefix + x.first, x.second, v);
 }
-
+//****
 int Trie::levenshteinDistance(std::string X, int m, std::string Y, int n)
 {
   if (m == 0)
@@ -140,26 +111,24 @@ int Trie::levenshteinDistance(std::string X, int m, std::string Y, int n)
             levenshteinDistance(X, m - 1, Y, n - 1) + cost);
 }
 
-void Trie::traverse(std::string word, TrieNode *node, std::vector<std::string> &v)
+//*****
+void Trie::traverse(std::string word, Node *node, std::vector<std::string> &v)
 {
-  if(node->isEndOfWord && search(word) == true)
+  if(node == NULL)
+    return;
+
+  if(node->LeafNode && search(word) == true)
     v.push_back(word);
 
-  for (int i = 0; i < ALPHABET_SIZE; i++)
-  {
-    if(node->children[i])
-    {
-      traverse(word + (char)(i + 'a'), node->children[i], v);
-    }
-  }
+  for(auto x : node->map)
+    traverse(word + x.first, x.second, v);
 }
 
 std::vector<std::string> Trie::getWords()
 {
-  TrieNode *temp = this->root;
+  Node *temp = this->root;
   std::vector<std::string> possible;
 
   traverse("", temp, possible);
-
   return possible;
 }

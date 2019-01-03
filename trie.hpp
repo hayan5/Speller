@@ -1,52 +1,38 @@
-//Implementaion of Trie
 #ifndef TRIE_HPP
 #define TRIE_HPP
 
-#include <vector>
 #include <iostream>
+#include <unordered_map>
+#include <vector>
 
-
-const int ALPHABET_SIZE = 26;
-
-
-struct TrieNode
+struct Node
 {
-  TrieNode *children[ALPHABET_SIZE];
-  bool isEndOfWord;
+  bool LeafNode;
+  std::unordered_map<char, Node*> map;
 };
 
-//Returns new trie node initialized to NULL
-//for when creating new node
-struct TrieNode *getNode()
+//Constuctor function for node struct
+struct Node *getNewNode()
 {
-  TrieNode *newNode = new TrieNode;
-  newNode->isEndOfWord = false;
-
-  for(int  i = 0; i < ALPHABET_SIZE; i++)
-    newNode->children[i] = NULL;
-
+  Node *newNode = new Node;
+  newNode->LeafNode = false;
   return newNode;
 }
-
 
 class Trie
 {
 public:
   Trie();
   ~Trie();
-  TrieNode *getRoot(){ return root; }
-  bool search(std::string word);
-  bool isLastNode(TrieNode *root);
   void insert(std::string word);
-  void loadDictionary(std::string dictionaryFile);
+  bool search(std::string word);
+  void createDictionary(std::string dictionaryFile);
   std::vector<std::string> prefixSearch(std::string prefix);
-  void traversePrefix(std::string prefix, TrieNode *node, std::vector<std::string> &v);
   int levenshteinDistance(std::string X, int m, std::string Y, int n);
-  void traverse (std::string word, TrieNode *node, std::vector<std::string> &v);
   std::vector<std::string> getWords();
 private:
-  TrieNode *root;
+  Node *root;
+  void traversePrefix(std::string prefix, Node *node, std::vector<std::string> &v);
+  void traverse (std::string word, Node *node, std::vector<std::string> &v);
 };
-
-
 #endif
