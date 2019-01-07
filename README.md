@@ -3,14 +3,22 @@ Spell correction and auto complete implemented using a trie
 
 After completeing this project for my data structures class I plan to continue working on this repository
 until I have a completely optimized working user friendly application.
-
 __________________________________________________________________________________
 **---Future Implementations---**
 1) Optimized Levenstien Distance Algorithm
-2) Memory optimized trie
+2) Memory optimized trie (Done)
 3) Fix small issues in user options
 4) Create user interface
 ______________________________________________________________________________________
+____________________________________________________________________________________
+**Version: 0.1.1**
+--***HASH MAP MEMORY OPTIMIZATION***
+
+-Replaced array inside of Node struct with unorderded map
+
+-Saves memory by avoiding unused pointers in each node
+____________________________________________________________________________________
+
 
 **Version: 0.1.0**
 --***FINAL PROJECT VERSION***
