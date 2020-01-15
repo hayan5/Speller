@@ -2,3 +2,4 @@ build/apps/*
 build/objects/*
 bin
 .DS_Store
+.vscode
