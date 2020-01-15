@@ -1,136 +1,78 @@
-#include "trie.hpp"
-#include <fstream>
+#include <trie.hpp>
 
 
-Trie::Trie()
-{
-  root = getNewNode();
+
+Trie::Trie() {
+  root = new TrieNode();
 }
 
-Trie::~Trie(){}
+Trie::~Trie() {
+  delete root;
+}
 
-//Inserts word into trie
-void Trie::insert(std::string word)
-{
-  Node *temp = this->root;
+void Trie::setRoot(TrieNode* root) {
+  this->root = root;
+}
 
-  for (int i = 0; i < word.length(); i++)
-  {
-    char x = word[i];
+TrieNode* Trie::getRoot(void) {
+  return this->root;
+}
 
-    if (temp->map[x] == NULL)
-      temp->map[x] = getNewNode();
 
-    temp = temp->map[x];
+// long int Trie::getNumberOfNodes(struct Node* root) {
+//   return 0;
+// }
+
+// Returns True if node has children
+bool Trie::has_children(TrieNode* node) {
+  for (auto it: node->children) {
+    if (it.second != nullptr)
+      return true;
   }
-  temp->LeafNode = true;
-
-
+  return false;
 }
 
-//Returns True if input word exsits in trie
-bool Trie::search(std::string word)
-{
-  Node *temp = this->root;
-  for (int i = 0; i < word.length(); i++)
-  {
-    temp = temp->map[word[i]];
+void Trie::insert(TrieNode* root, std::string const& key) {
 
-    if(!temp)
-      return false;
-  }
-  return temp->LeafNode;
-}
+  TrieNode* temp = root;
 
-//Creates trie using words from input file
-void Trie::createDictionary(std::string dictionaryFile)
-{
-  std::string line;
-  std::ifstream data(dictionaryFile);
+  for (int i = 0; i < key.size(); i++) {
 
-  if(data.is_open()){
-
-    while(getline (data,line)){
-      insert(line);
+    if (temp->children[key[i]] == nullptr) {
+      TrieNode* newNode = new TrieNode();
+      newNode->set_path(temp->path + key[i]);
+      temp->children[key[i]] = newNode;
     }
+    
+    temp = temp->children[key[i]];
+    
+    if (i == key.size() - 1)
+      temp->make_leaf();
+  }
+}
 
-    data.close();
-    std::cout<<"Dictionary Created"<<std::endl;
+bool Trie::remove(TrieNode* root, std::string const& key) {
+  
+  
+  
+ 
+ 
+
+  return true;
+}
+
+
+
+// Returns false if key does not exist in trie
+bool Trie::contains(TrieNode* root, std::string const& key) {
+
+  TrieNode* temp = root;
+
+  for (int i = 0; i < key.size(); i++) {
+    if (temp->children[key[i]] == nullptr)
+      return false;
+    temp = temp->children[key[i]];
   }
 
-  else
-    std::cout<<"Unable to open dictionary file"<<std::endl;
-}
-
-//Travereses tree to prefix then calls to traverse function
-//to get all possible endings then returns vectors with endings
-std::vector<std::string> Trie::prefixSearch(std::string prefix)
-{
-  Node *temp = this->root;
-  std::vector<std::string> completions;
-
-  for (int i = 0; i < prefix.length(); i++)
-  {
-    if(temp->map[prefix[i]])
-      temp = temp->map[prefix[i]];
-  }
-
-  traverse(prefix, temp, completions);
-
-  return completions;
-}
-
-//****
-int Trie::levenshteinDistance(std::string X, int m, std::string Y, int n)
-{
-  if (m == 0)
-    return n;
-
-  if (n == 0)
-    return m;
-
-  int cost;
-
-  if (X[m - 1] == Y[n - 1])
-    cost = 0;
-  else
-    cost = 1;
-
-  return std::min(std::min(levenshteinDistance(X, m - 1, Y, n) + 1,
-            levenshteinDistance(X, m, Y, n - 1) + 1),
-            levenshteinDistance(X, m - 1, Y, n - 1) + cost);
-}
-
-int Trie::printTime(std::string X, int m, std::string Y, int n)
-{
-  clock_t t;
-  int ld;
-  t = clock();
-  ld = levenshteinDistance(X, m, Y, n);
-  t = clock() - t;
-  std::cout<<"Time: "<<t<<std::endl;
-  return ld;
-
-}
-
-//*****
-void Trie::traverse(std::string word, Node *node, std::vector<std::string> &v)
-{
-  if(node == NULL)
-    return;
-
-  if(node->LeafNode && search(word) == true)
-    v.push_back(word);
-
-  for(auto x : node->map)
-    traverse(word + x.first, x.second, v);
-}
-
-std::vector<std::string> Trie::getWords()
-{
-  Node *temp = this->root;
-  std::vector<std::string> possible;
-
-  traverse("", temp, possible);
-  return possible;
+  return temp->is_leaf();
 }
