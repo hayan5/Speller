@@ -1,4 +1,8 @@
 # Speller
+
+  make: all, run, clean
+
+
   Implemented trie data structure to store dictionary with fast search and insertion 
   
   User has options to add to:
